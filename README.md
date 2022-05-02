@@ -30,11 +30,9 @@ class Faq(models.Model):
     created_at = models.DateTimeField(verbose_name='생성일시', auto_now_add=True)
     last_updated_at = models.DateTimeField(verbose_name='최종수정일', auto_now=True)
     writer = models.ForeignKey(
-        verbose_name='작성자', to=User, on_delete=models.CASCADE, null=True, blank=True)
-    last_updated_user = models.CharField(
-        verbose_name="최종수정자", max_length=10, null=True, blank=True)
+        to=User,verbose_name='작성자',  on_delete=models.CASCADE,related_name="writer_name")
+    last_updated_user = models.ForeignKey(to=User,verbose_name="최종 작성자", on_delete=models.CASCADE,related_name="last_updater_name")
 ```
-최종 수정자는 도무지 어떻게 구현해야할지 모르겠어서 charfield로 구색만 갖춤.
 ## challenge 미션
 고객센터 1:1 문의, 답글 모델 만들기
 
@@ -78,8 +76,8 @@ class Inquiry(models.Model):
     last_updated_at = models.DateTimeField(
         verbose_name="최종 수정 일자", auto_now=True)
     writer = models.ForeignKey(
-        to=User, verbose_name="생성자", on_delete=models.CASCADE)
-    last_updater = models.CharField(verbose_name="최종수정자", max_length=10)
+        to=User, verbose_name="생성자", on_delete=models.CASCADE,related_name="writer_name")
+    last_updater = models.ForeignKey(to=User,verbose_name="최종 작성자", on_delete=models.CASCADE,related_name="last_updater_name")
     finish = models.BooleanField(verbose_name="답변완료여부", default=False)
 ```
 
@@ -88,14 +86,14 @@ class Inquiry(models.Model):
 ```python
 class Answer(models.Model):
     content = models.TextField(verbose_name="답변내용", blank=True)
-    reference = models.TextField(verbose_name="참조 문의글", blank=True)
+    Inquiry = models.ForeignKey(Inquiry,verbose_name="참조문의글", on_delete=models.CASCADE)
     created_at = models.DateTimeField(verbose_name="생성일시", auto_now_add=True)
     last_updated_at = models.DateTimeField(
         verbose_name="최종수정일시", auto_now=True)
-    last_updater = models.CharField(verbose_name="최종수정자", max_length=10)
-    Inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
+    last_updater = models.ForeignKey(to=User,verbose_name="최종 작성자", on_delete=models.CASCADE,related_name="Answer_last_updater")
+    
     writer = models.ForeignKey(
-        to=User, verbose_name="작성자", on_delete=models.CASCADE)
+        to=User, verbose_name="작성자", on_delete=models.CASCADE,related_name="Answer_writer_name")
 ```
 
 
