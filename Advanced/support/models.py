@@ -25,8 +25,8 @@ class Inquiry(models.Model):
     last_updated_at = models.DateTimeField(
         verbose_name="최종 수정 일자", auto_now=True)
     writer = models.ForeignKey(
-        to=User, verbose_name="생성자", on_delete=models.CASCADE)
-    last_updater = models.CharField(verbose_name="최종수정자", max_length=10)
+        to=User, verbose_name="생성자", on_delete=models.CASCADE,related_name="writer_name")
+    last_updater = models.ForeignKey(to=User,verbose_name="최종 작성자", on_delete=models.CASCADE,related_name="last_updater_name")
     finish = models.BooleanField(verbose_name="답변완료여부", default=False)
 
 
@@ -36,7 +36,7 @@ class Answer(models.Model):
     created_at = models.DateTimeField(verbose_name="생성일시", auto_now_add=True)
     last_updated_at = models.DateTimeField(
         verbose_name="최종수정일시", auto_now=True)
-    last_updater = models.CharField(verbose_name="최종수정자", max_length=10)
+    last_updater = models.ForeignKey(to=User,verbose_name="최종 작성자", on_delete=models.CASCADE,related_name="Answer_last_updater")
     Inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
     writer = models.ForeignKey(
-        to=User, verbose_name="작성자", on_delete=models.CASCADE)
+        to=User, verbose_name="작성자", on_delete=models.CASCADE,related_name="Answer_writer_name")
